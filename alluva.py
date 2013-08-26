@@ -16,7 +16,7 @@ for match in pattern.finditer(html):
 
 	PROBLEM_REGEX = 'page=show_problem&amp'#;problem=(\d+)">(\d+)&nbsp;-&nbsp;(.*)</a></td>'
 	problem_pattern = re.compile(PROBLEM_REGEX, re.UNICODE)
-	
+	print problems_html
 	for problem_match in problem_pattern.finditer(problems_html):
 		print "%s %s %s" % (problem_match.group(1), problem_match.group(2), problem_match.group(3))
 #						<td align="right">548754</td>
