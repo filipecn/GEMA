@@ -10,9 +10,11 @@ for i in range(1):
 	problem_pattern = re.compile(problem_regex, re.UNICODE | re.DOTALL)
 	
 	for problem_match in problem_pattern.finditer(html):
-		print "%s %s %s %s" % (problem_match.group(1), problem_match.group(2), problem_match.group(3), problem_match.group(4))
 		p = Problem()
 		p.judge = "tju"
-		p.name = "%s" % problem_match.group(2)
 		p.judge_id = "%s" % problem_match.group(1)
-		p.judge_difficulty = "0"
+		p.name = "%s" % problem_match.group(2)
+		p.url = "http://acm.tju.edu.cn/toj/showp%s.html" % problem_match.group(1)
+		p.users = "%s" % problem_match.group(4)
+		p.accepted = "%s" % problem_match.group(3)
+		p.dump()
