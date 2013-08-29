@@ -1,6 +1,8 @@
 import urllib2
 import re
 
+from gemadb import Problem
+
 for i in range(3):
 	url =  "http://www.spoj.com/problems/classical/sort=0,start=" + str(i*50)
 	response = urllib2.urlopen(url)
@@ -10,4 +12,11 @@ for i in range(3):
 	pattern = re.compile(REGEX, re.UNICODE)
 
 	for match in pattern.finditer(html):
-		print "%s %s %s %s %s" % (match.group(1), match.group(2), match.group(3), match.group(4), match.group(5))
+		p = Problem()
+		p.judge = "spoj"
+		p.judge_id = "%s" % match.group(2)
+		p.name = "%s" % match.group(3)
+		p.url = "http://www.spoj.com/problems/%s/" % match.group(2)
+		p.users = "%s" % match.group(4)
+		p.accepted = "%s" % match.group(5)
+		p.dump()
