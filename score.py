@@ -14,11 +14,16 @@ html = urllib2.urlopen("http://gema.herokuapp.com/ranking").read()
 
 contestant_pattern = re.compile(r'<td>(.*?)</td>.*?<td>(\d+)<', re.UNICODE | re.DOTALL)
 
+this_week = open('thisweek', 'w+')
+
 score = {}
 for contestant_match in contestant_pattern.finditer(html):
 	lastweekcount = lastweek.get(str(contestant_match.group(1)), -1)
 	if lastweekcount != -1:
 		score.setdefault(str(contestant_match.group(1)), []).append(int(contestant_match.group(2)) - int(lastweekcount[0]))
+		this_week.write("%s %s\n" % (contestant_match.group(1), contestant_match.group(2)))
+
+this_week.close()
 
 sorted = [x for x in score.iteritems()]
 sorted.sort(key=lambda x: x[1])
