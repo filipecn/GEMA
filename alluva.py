@@ -1,5 +1,6 @@
 import urllib2
-import re
+import urllib
+import re, utils
 
 #PROBLEM SET VOLUMES
 
@@ -11,14 +12,15 @@ REGEX = r'<td><a href="(.*)">Volume'
 pattern = re.compile(REGEX, re.UNICODE)
 
 for match in pattern.finditer(html):
-	print "%s" % (match.group(1))
-	problems_html = urllib2.urlopen("http://uva.onlinejudge.org/%s" % (match.group(1))).read()
+	url = re.sub(r'&amp;', '&', "%s" % (match.group(1)))
+	problems_html = urllib2.urlopen("http://uva.onlinejudge.org/%s" % url).read()
 
 	PROBLEM_REGEX = 'page=show_problem&amp'#;problem=(\d+)">(\d+)&nbsp;-&nbsp;(.*)</a></td>'
 	problem_pattern = re.compile(PROBLEM_REGEX, re.UNICODE)
 	print problems_html
-	for problem_match in problem_pattern.finditer(problems_html):
-		print "%s %s %s" % (problem_match.group(1), problem_match.group(2), problem_match.group(3))
+
+#	for problem_match in problem_pattern.finditer(problems_html):
+#		print "%s %s %s" % (problem_match.group(1), problem_match.group(2), problem_match.group(3))
 #						<td align="right">548754</td>
 #			<td>
 #			
