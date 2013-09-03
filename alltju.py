@@ -3,7 +3,7 @@ import re
 
 from gemadb import Problem
 
-for i in range(1):
+for i in range(31):
 	html = urllib2.urlopen("http://acm.tju.edu.cn/toj/list%s.html" % str(i+1)).read()
 	
 	problem_regex = r'p\([0-9]+,[0-9]+,([0-9]+),"(.*?)",[0-9]+,[0-9]+,([0-9]+),"(.*?)"'
