@@ -1,11 +1,13 @@
 import json
 import urllib2
 
-
 class Problem:
     def __init__(self, data):
         self.problems_url = "http://gemadb-rrp.rhcloud.com/problems"
         self.data = data
+
+    def __str__(self):
+        return ', '.join("%s=%r" % (key,val) for (key,val) in self.data.iteritems())
 
     def save(self):
         json_data = json.dumps(self.data)
