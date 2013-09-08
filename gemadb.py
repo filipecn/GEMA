@@ -1,6 +1,26 @@
 import json
 import urllib2
 
+class Tag:
+    def __init__(self, data):
+        self.tags_url = "http://gemadb-rrp.rhcloud.com/tags"
+        self.data = data
+
+    def __str__(self):
+        return ', '.join("%s=%r" % (key,val) for (key,val) in self.data.iteritems())
+
+    def save(self):
+        json_data = json.dumps(self.data)
+        length    = len(json_data)
+        req = urllib2.Request(self.tags_url, json_data,
+            {'Content-Type': 'application/json', 'Content-Length': length})
+        f = urllib2.urlopen(req)
+        status = f.getcode()
+        f.close()
+
+        return status == 200
+
+
 class Problem:
     def __init__(self, data):
         self.problems_url = "http://gemadb-rrp.rhcloud.com/problems"

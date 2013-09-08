@@ -19,12 +19,12 @@ for category_match in categories_pattern.finditer(main_html.group(1)):
 		pattern = re.compile(REGEX, re.UNICODE | re.DOTALL)
 		for match in pattern.finditer(page_html):
 			data = {
-					'name': "%s" % match.group(2),
+					'name': "%s" % unicode(match.group(2), "ISO-8859-1"),
 					'jid': "%s" % match.group(1),
 					'judge_id':'5', #id on gemadb
 					'url': "http://www.spoj.com/problems/%s/" % match.group(1),
 					'total_users': "%s" % match.group(3),
-					'accepted_users': "%s" % match.group(4),
+					'accepted_users': "%d" % int(float(match.group(4))*int(match.group(3))/100),
 					'total_submissions':-1,
 					'accepted_submissions':-1,
 					'description':'',
