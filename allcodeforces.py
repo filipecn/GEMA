@@ -1,6 +1,17 @@
 import urllib2
 import re
 
+from gemadb import Problem
+
+tagsdic = {}
+tagsf = open('tagslist', 'r+').read()
+tagpattern = re.compile(r'(\d+),(.*?)\n', re.UNICODE | re.DOTALL)
+
+for tagmatch in tagpattern.finditer(tagsf):
+	tagsdic[str(tagmatch.group(2)).lower()] = int(tagmatch.group(1))
+
+print tagsdic
+
 for i in range(1):
 	html = urllib2.urlopen("http://codeforces.com/contests/page/" + str(i+1)).read()
 	
@@ -21,8 +32,30 @@ for i in range(1):
 			
 			print "http://codeforces.com/contest/%s/problem/%s" % (contest_match.group(1),problem_match.group(1))
 			tags_html = re.search(r"Problem tags(.*?)addTagForm", problem_html, re.UNICODE | re.DOTALL)
-			tag_regex = r'<span class="tag-box".*?>.*?([a-zA-Z0-9 ]+)<?'
+			tag_regex = r'<span class="tag-box".*?>.*?([a-z])(.*?)[\r|\n]'
 			tag_pattern = re.compile(tag_regex, re.UNICODE | re.DOTALL)
 			
+			tagslist = []
 			for tag_match in tag_pattern.finditer(tags_html.group(1)):
-				print "%s" % (tag_match.group(1))
+				print "%s%s" % (tag_match.group(1), tag_match.group(2))
+				print tagslist.append(tagsdic["%s%s" % (tag_match.group(1), tag_match.group(2))])
+
+			data = {
+				'name': "%s" % problem_match.group(2),
+				'jid': "%s" % "asd",
+				'judge_id':'1', #id on gemadb
+				'url': "http://codeforces.com/contest/%s/problem/%s" % (contest_match.group(1),problem_match.group(1)),
+				'total_users':contest_match.group(3),
+				'accepted_users': problem_match.group(3),
+				'total_submissions':-1,
+				'accepted_submissions':-1,
+				'description':'',
+				'spoiler':'',
+				'tag_ids':tagslist
+			}
+			p = Problem(data)
+			print p
+			#if p.save():
+			#	print "Problem %s saved " % data['jid']
+			#else:
+			#	print "Problem %s NOT saved " % data['jid']
