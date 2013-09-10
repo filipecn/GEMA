@@ -23,7 +23,7 @@ for i in range(1):
 		print "%s %s %s" % (contest_match.group(1), contest_match.group(2), contest_match.group(3))
 		
 		contest_html = urllib2.urlopen("http://codeforces.com/contest/%s" % (contest_match.group(1))).read()
-		problem_regex = r"/contest/"+re.escape(contest_match.group(1))+r'/problem/(.*?)".*?problem.*?>(.*?)<.*?nbsp;(x\d+|.)'
+		problem_regex = r"/contest/"+re.escape(contest_match.group(1))+r'/problem/(.*?)".*?problem.*?>(.*?)<.*?nbsp;x(\d+|.)'
 		problem_pattern = re.compile(problem_regex, re.UNICODE | re.DOTALL)
 		
 		for problem_match in problem_pattern.finditer(contest_html):
@@ -38,11 +38,12 @@ for i in range(1):
 			tagslist = []
 			for tag_match in tag_pattern.finditer(tags_html.group(1)):
 				print "%s%s" % (tag_match.group(1), tag_match.group(2))
-				print tagslist.append(tagsdic["%s%s" % (tag_match.group(1), tag_match.group(2))])
+				tagslist.append(tagsdic["%s%s" % (tag_match.group(1), tag_match.group(2))])
+				print tagsdic["%s%s" % (tag_match.group(1), tag_match.group(2))]
 
 			data = {
 				'name': "%s" % problem_match.group(2),
-				'jid': "%s" % "asd",
+				'jid': "%s%s" % (str(contest_match.group(2)).replace(" ", ""), problem_match.group(1)),
 				'judge_id':'1', #id on gemadb
 				'url': "http://codeforces.com/contest/%s/problem/%s" % (contest_match.group(1),problem_match.group(1)),
 				'total_users':contest_match.group(3),
