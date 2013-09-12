@@ -18,18 +18,26 @@ for i in range(1):
 	contests_html = re.search(r'Contest history(.*)', html, re.UNICODE | re.DOTALL)
 	contest_regex = r'data-contestId="(\d+)".*?<td>[\n|\r| ]*(.*?)<br/>.*?nbsp;x(\d+)'
 	contest_pattern = re.compile(contest_regex, re.UNICODE | re.DOTALL)
-	
+	PROBLEM_COUNT = 0
 	for contest_match in contest_pattern.finditer(contests_html.group(1)):
+		if PROBLEM_COUNT < 0 :
+			continue
+		PROBLEM_COUNT = PROBLEM_COUNT + 1
+		print "PROBLEM %d" % PROBLEM_COUNT
 		print "%s %s %s" % (contest_match.group(1), contest_match.group(2), contest_match.group(3))
-		
 		contest_html = urllib2.urlopen("http://codeforces.com/contest/%s" % (contest_match.group(1))).read()
-		problem_regex = r"/contest/"+re.escape(contest_match.group(1))+r'/problem/(.*?)".*?problem.*?>(.*?)<.*?nbsp;x(\d+|.)'
+		problem_regex = r"/contest/"+re.escape(contest_match.group(1))+r'/problem/(.*?)".*?problem.*?>(.*?)<.*?nbsp;(x\d+|.)'
 		problem_pattern = re.compile(problem_regex, re.UNICODE | re.DOTALL)
 		
 		for problem_match in problem_pattern.finditer(contest_html):
 			print "%s %s %s" % (problem_match.group(1), problem_match.group(2), problem_match.group(3))
 			problem_html = urllib2.urlopen("http://codeforces.com/contest/%s/problem/%s" % (contest_match.group(1),problem_match.group(1))).read()
 			
+			accusers = "0"
+			numbertext = re.search(r'(\d+)', problem_match.group(3), re.UNICODE); 
+			if numbertext :	
+				accusers = numbertext.group(1)
+
 			print "http://codeforces.com/contest/%s/problem/%s" % (contest_match.group(1),problem_match.group(1))
 			tags_html = re.search(r"Problem tags(.*?)addTagForm", problem_html, re.UNICODE | re.DOTALL)
 			tag_regex = r'<span class="tag-box".*?>.*?([a-z])(.*?)[\r|\n]'
@@ -47,7 +55,7 @@ for i in range(1):
 				'judge_id':'1', #id on gemadb
 				'url': "http://codeforces.com/contest/%s/problem/%s" % (contest_match.group(1),problem_match.group(1)),
 				'total_users':contest_match.group(3),
-				'accepted_users': problem_match.group(3),
+				'accepted_users': accusers,
 				'total_submissions':-1,
 				'accepted_submissions':-1,
 				'description':'',
@@ -56,7 +64,7 @@ for i in range(1):
 			}
 			p = Problem(data)
 			print p
-			#if p.save():
-			#	print "Problem %s saved " % data['jid']
-			#else:
-			#	print "Problem %s NOT saved " % data['jid']
+			if p.save():
+				print "Problem %s saved " % data['jid']
+			else:
+				print "Problem %s NOT saved " % data['jid']

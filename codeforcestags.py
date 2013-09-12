@@ -25,10 +25,11 @@ for tag in tagslist[1:]:
 		'name': "%s" % tag
 	}
 	t = Tag(data)
-	if t.save():
-		print "Tag %s saved " % data['name']
-	else:
-		print "Tag %s NOT saved " % data['name']
+	print t
+#	if t.save():
+#		print "Tag %s saved " % data['name']
+#	else:
+#		print "Tag %s NOT saved " % data['name']
 
 
 
