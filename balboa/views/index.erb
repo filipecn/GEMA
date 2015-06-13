@@ -1,0 +1,5 @@
+Hello, <%= user.name %>.
+Today is <%= Time.now.strftime('%A') %>.
+<% problems.each do |p|%>
+	<a href="/<%= p.name%> "><%= p.name%></a>
+<% end %>
